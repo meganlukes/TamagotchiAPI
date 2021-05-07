@@ -132,6 +132,50 @@ namespace TamagotchiAPI.Controllers
             // headers with details of the newly created object.
             return CreatedAtAction("GetPets", new { id = pets.Id }, pets);
         }
+        [HttpPost("{id}/Playtimes")]
+        public async Task<ActionResult<Playtimes>> CreatePlaytimeForPet(int id, Playtimes playtime)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
+            {
+                return NotFound();
+            }
+            playtime.PetID = pet.Id;
+            pet.HappinessLevel += 5;
+            pet.HungerLevel += 3;
+            _context.Playtimes.Add(playtime);
+            await _context.SaveChangesAsync();
+            return Ok(playtime);
+        }
+        [HttpPost("{id}/Feedings")]
+        public async Task<ActionResult<Feedings>> CreateFeedingForPet(int id, Feedings feeding)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
+            {
+                return NotFound();
+            }
+            feeding.PetID = pet.Id;
+            pet.HappinessLevel += 3;
+            pet.HungerLevel -= 5;
+            _context.Feedings.Add(feeding);
+            await _context.SaveChangesAsync();
+            return Ok(feeding);
+        }
+        [HttpPost("{id}/Scoldings")]
+        public async Task<ActionResult<Feedings>> CreateScoldingForPet(int id, Scoldings scolding)
+        {
+            var pet = await _context.Pets.FindAsync(id);
+            if (pet == null)
+            {
+                return NotFound();
+            }
+            scolding.PetID = pet.Id;
+            pet.HappinessLevel -= 5;
+            _context.Scoldings.Add(scolding);
+            await _context.SaveChangesAsync();
+            return Ok(scolding);
+        }
 
         // DELETE: api/Pets/5
         //
